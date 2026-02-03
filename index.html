@@ -17,20 +17,22 @@
 
     #quote-box {
       font-family: 'Song Myung', serif;
-      font-size: 28px; /* 명언 크기 */
+      font-size: 28px;
       color: #FFFFFF;
-      line-height: 1.6;
+      line-height: 1.4;
       word-break: keep-all;
     }
 
-    /* 이름(출처) 스타일: 여기서 크기를 조절하세요! */
+    /* 이름 스타일: 옆으로 붙이기 위해 inline-block 사용 */
     .author {
-      display: block; /* 줄바꿈하여 아래에 배치 */
-      font-size: 16px; /* 이름 크기 (원하는 대로 줄이세요) */
-      color: rgba(255, 255, 255, 0.6); /* 살짝 투명하게 해서 강조 낮춤 */
-      margin-top: 10px;
+      display: inline-block; 
+      font-size: 16px; /* 이름 크기 */
+      color: rgba(255, 255, 255, 0.5); /* 투명도 50% */
+      margin-left: 15px; /* 명언과 이름 사이 간격 */
+      vertical-align: middle; /* 명언 높낮이와 맞춤 */
     }
 
+    /* 앞뒤 큰따옴표 스타일 */
     #quote-box::before { content: "“"; color: #eb5757; font-size: 40px; margin-right: 10px; vertical-align: sub; }
     #quote-box::after { content: "”"; color: #eb5757; font-size: 40px; margin-left: 10px; vertical-align: sub; }
 
@@ -56,15 +58,14 @@
       const rawQuote = quotes[randomIndex];
       const box = document.getElementById("quote-box");
 
-      // 하이픈(-)을 기준으로 문장과 이름을 분리합니다.
       const parts = rawQuote.split("-");
       const text = parts[0].trim();
       const author = parts[1] ? parts[1].trim() : "";
 
       box.style.opacity = 0;
       setTimeout(() => {
-        // 이름을 <span class='author'>로 감싸서 작게 만듭니다.
-        box.innerHTML = text + (author ? `<span class="author">- ${author}</span>` : "");
+        // 이름을 <span>으로 감싸서 한 줄에 넣습니다.
+        box.innerHTML = `${text} <span class="author">- ${author}</span>`;
         box.style.opacity = 1;
       }, 150);
     }
