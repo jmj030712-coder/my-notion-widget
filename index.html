@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    /* 노션 스타일과 어울리는 폰트 및 디자인 세팅 */
+    body {
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background-color: transparent; /* 배경을 투명하게 설정 */
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol";
+    }
+    #quote-box {
+      text-align: center;
+      font-size: 1.2rem;
+      font-weight: 500;
+      color: #37352f; /* 노션 기본 글자색 */
+      line-height: 1.5;
+      padding: 20px;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="quote-box">응원 메시지를 불러오는 중...</div>
+
+  <script>
+    // 본인이 원하는 문구로 자유롭게 수정하세요!
+    const quotes = [
+      "💪 끝까지 가는 사람이 승리한다!",
+      "🔥 지금 이 노력이 결과를 만든다.",
+      "📚 할 수 있다! 너를 믿어봐.",
+      "✨ 지치지 않는 마음이 제일 중요해.",
+      "🍀 오늘도 고생 많았어, 조금만 더!",
+      "🎯 너의 잠재력을 믿어, 충분히 잘하고 있어."
+    ];
+
+    // 페이지가 새로고침될 때마다 무작위로 하나를 선택합니다.
+    function displayRandomQuote() {
+      const randomIndex = Math.floor(Math.random() * quotes.length);
+      document.getElementById("quote-box").innerText = quotes[randomIndex];
+    }
+
+    displayRandomQuote();
+  </script>
+</body>
+</html>
