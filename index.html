@@ -1,8 +1,11 @@
 <!DOCTYPE html>
-<html>
+<html lang="ko">
 <head>
+  <meta charset="UTF-8">
   <style>
-    /* 노션 스타일과 어울리는 폰트 및 디자인 세팅 */
+    /* 폰트 불러오기 (지마켓 산스 - 깔끔하고 힘 있는 느낌) */
+    @import url('https://fonts.googleapis.com/css2?family=Gmarket+Sans:wght@500&display=swap');
+
     body {
       margin: 0;
       padding: 0;
@@ -10,35 +13,40 @@
       justify-content: center;
       align-items: center;
       height: 100vh;
-      background-color: transparent; /* 배경을 투명하게 설정 */
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol";
+      background-color: transparent; /* 배경 투명 */
+      overflow: hidden; /* 스크롤바 방지 */
     }
+
     #quote-box {
-      text-align: center;
-      font-size: 1.2rem;
+      font-family: 'Gmarket Sans', sans-serif;
+      font-size: 24px; /* 글자 크기: 여기서 조절하세요! */
       font-weight: 500;
-      color: #37352f; /* 노션 기본 글자색 */
-      line-height: 1.5;
-      padding: 20px;
+      color: #37352F; /* 노션 기본 검정색 */
+      line-height: 1.6;
+      text-align: center;
+      word-break: keep-all; /* 단어 단위로 줄바꿈 */
+      transition: all 0.5s ease; /* 부드러운 전환 효과 */
+      
+      /* 살짝 그림자를 주어 입체감을 줄 수 있습니다 (선택) */
+      /* text-shadow: 1px 1px 2px rgba(0,0,0,0.1); */
     }
   </style>
 </head>
 <body>
 
-  <div id="quote-box">응원 메시지를 불러오는 중...</div>
+  <div id="quote-box">오늘도 너의 속도대로, 꾸준히! 🏃‍♂️</div>
 
   <script>
-    // 본인이 원하는 문구로 자유롭게 수정하세요!
     const quotes = [
       "💪 끝까지 가는 사람이 승리한다!",
       "🔥 지금 이 노력이 결과를 만든다.",
       "📚 할 수 있다! 너를 믿어봐.",
       "✨ 지치지 않는 마음이 제일 중요해.",
       "🍀 오늘도 고생 많았어, 조금만 더!",
-      "🎯 너의 잠재력을 믿어, 충분히 잘하고 있어."
+      "🎯 너의 잠재력을 믿어, 충분히 잘하고 있어.",
+      "🌊 잔잔한 바다에선 유능한 뱃사공이 만들어지지 않는다."
     ];
 
-    // 페이지가 새로고침될 때마다 무작위로 하나를 선택합니다.
     function displayRandomQuote() {
       const randomIndex = Math.floor(Math.random() * quotes.length);
       document.getElementById("quote-box").innerText = quotes[randomIndex];
