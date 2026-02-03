@@ -3,8 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <style>
-    /* 폰트 불러오기 (지마켓 산스 - 깔끔하고 힘 있는 느낌) */
-    @import url('https://fonts.googleapis.com/css2?family=Gmarket+Sans:wght@500&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Song+Myung&display=swap');
 
     body {
       margin: 0;
@@ -13,28 +12,57 @@
       justify-content: center;
       align-items: center;
       height: 100vh;
-      background-color: transparent; /* 배경 투명 */
-      overflow: hidden; /* 스크롤바 방지 */
+      /* 배경색: 순수 검정(#000000) 또는 노션 다크모드 배경색(#191919) 중 선택하세요 */
+      background-color: #191919; 
+      overflow: hidden;
+    }
+
+    #quote-container {
+      text-align: center;
+      cursor: pointer;
+      user-select: none;
+      transition: all 0.3s ease;
+      padding: 20px;
     }
 
     #quote-box {
-      font-family: 'Gmarket Sans', sans-serif;
-      font-size: 24px; /* 글자 크기: 여기서 조절하세요! */
-      font-weight: 500;
-      color: #37352F; /* 노션 기본 검정색 */
+      font-family: 'Song Myung', serif;
+      font-size: 28px;
+      font-weight: 400;
+      /* 글자색: 흰색 */
+      color: #FFFFFF;
       line-height: 1.6;
-      text-align: center;
-      word-break: keep-all; /* 단어 단위로 줄바꿈 */
-      transition: all 0.5s ease; /* 부드러운 전환 효과 */
-      
-      /* 살짝 그림자를 주어 입체감을 줄 수 있습니다 (선택) */
-      /* text-shadow: 1px 1px 2px rgba(0,0,0,0.1); */
+      word-break: keep-all;
+    }
+
+    /* 앞뒤 큰따옴표 스타일링 */
+    #quote-box::before {
+      content: "“";
+      color: #eb5757; /* 빨간색 포인트는 유지 (흰색으로 바꾸려면 #FFFFFF로 수정) */
+      font-size: 40px;
+      margin-right: 10px;
+      vertical-align: sub;
+    }
+
+    #quote-box::after {
+      content: "”";
+      color: #eb5757;
+      font-size: 40px;
+      margin-left: 10px;
+      vertical-align: sub;
+    }
+
+    #quote-container:active {
+      transform: scale(0.97);
+      opacity: 0.7;
     }
   </style>
 </head>
 <body>
 
-  <div id="quote-box">오늘도 너의 속도대로, 꾸준히! 🏃‍♂️</div>
+  <div id="quote-container" onclick="displayRandomQuote()">
+    <div id="quote-box">오늘도 너의 속도대로, 꾸준히!</div>
+  </div>
 
   <script>
     const quotes = [
@@ -44,12 +72,19 @@
       "✨ 지치지 않는 마음이 제일 중요해.",
       "🍀 오늘도 고생 많았어, 조금만 더!",
       "🎯 너의 잠재력을 믿어, 충분히 잘하고 있어.",
-      "🌊 잔잔한 바다에선 유능한 뱃사공이 만들어지지 않는다."
+      "🌊 잔잔한 바다에선 유능한 뱃사공이 만들어지지 않는다.",
+      "🏆 오늘의 땀방울이 내일의 영광이 된다."
     ];
 
     function displayRandomQuote() {
       const randomIndex = Math.floor(Math.random() * quotes.length);
-      document.getElementById("quote-box").innerText = quotes[randomIndex];
+      const box = document.getElementById("quote-box");
+      
+      box.style.opacity = 0;
+      setTimeout(() => {
+        box.innerText = quotes[randomIndex];
+        box.style.opacity = 1;
+      }, 150);
     }
 
     displayRandomQuote();
