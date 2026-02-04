@@ -1,11 +1,84 @@
-<script>
-  // --- 디데이 로직 (Safari 호환형) ---
-  // 년, 월(0-11), 일, 시, 분, 초 순서입니다. (11월은 10으로 입력)
-  const targetDate = new Date(2026, 10, 19, 9, 0, 0).getTime();
-  const startDate = new Date(2026, 0, 1, 0, 0, 0).getTime();
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Song+Myung&display=swap');
 
-  function updateDDay() {
-    try {
+    :root {
+      --bg-color: #FFFFFF;
+      --text-main: #37352F;
+      --text-sub: rgba(55, 53, 47, 0.6);
+      --bar-bg: #EEEEEE;
+      --divider: rgba(55, 53, 47, 0.1);
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg-color: #191919;
+        --text-main: #FFFFFF;
+        --text-sub: rgba(255, 255, 255, 0.6);
+        --bar-bg: #333333;
+        --divider: rgba(255, 255, 255, 0.1);
+      }
+    }
+
+    body {
+      margin: 0; padding: 0; display: flex; flex-direction: column; justify-content: center; align-items: center;
+      height: 100vh; background-color: var(--bg-color);
+      overflow: hidden; font-family: 'Song Myung', serif;
+      transition: background-color 0.3s ease;
+    }
+
+    .dday-section { width: 90%; text-align: center; margin-bottom: 30px; }
+    .title { color: var(--text-main); font-size: 16px; margin-bottom: 15px; letter-spacing: 2px; opacity: 0.6; }
+    
+    .progress-container {
+      width: 100%; height: 8px; background: var(--bar-bg); border-radius: 20px;
+      position: relative; margin-bottom: 20px; box-shadow: inset 0 1px 3px rgba(0,0,0,0.2);
+    }
+    .progress-bar {
+      width: 0%; height: 100%; background: linear-gradient(90deg, #eb5757, #f2994a);
+      border-radius: 20px; box-shadow: 0 0 10px rgba(235, 87, 87, 0.4); transition: width 1s linear;
+    }
+
+    #countdown { color: var(--text-main); font-size: 28px; margin-bottom: 5px; }
+    .unit { font-size: 14px; color: #eb5757; margin-left: 2px; margin-right: 5px; }
+    .percent-label { color: #eb5757; font-size: 12px; font-family: sans-serif; opacity: 0.8; }
+
+    .divider { width: 60%; height: 1px; background: var(--divider); margin: 10px 0 25px 0; }
+
+    #quote-container { width: 90%; text-align: center; cursor: pointer; user-select: none; }
+    #quote-box { font-size: 24px; color: var(--text-main); line-height: 1.4; word-break: keep-all; transition: opacity 0.3s; }
+    .author { display: inline-block; font-size: 14px; color: var(--text-sub); margin-left: 10px; vertical-align: middle; }
+
+    #quote-box::before { content: "“"; color: #eb5757; font-size: 35px; margin-right: 8px; vertical-align: sub; }
+    #quote-box::after { content: "”"; color: #eb5757; font-size: 35px; margin-left: 8px; vertical-align: sub; }
+  </style>
+</head>
+<body>
+
+  <div class="dday-section">
+    <div class="title">2027학년도 수능 타임라인</div>
+    <div class="progress-container">
+      <div class="progress-bar" id="bar"></div>
+    </div>
+    <div id="countdown">계산 중...</div>
+    <div class="percent-label" id="percent-text">0.000000%</div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div id="quote-container" onclick="displayRandomQuote()">
+    <div id="quote-box">불러오는 중...</div>
+  </div>
+
+  <script>
+    // 날짜 설정: 월은 0부터 시작 (11월은 10)
+    const targetDate = new Date(2026, 10, 19, 9, 0, 0).getTime();
+    const startDate = new Date(2026, 0, 1, 0, 0, 0).getTime();
+
+    function updateDDay() {
       const now = new Date().getTime();
       const totalTime = targetDate - startDate;
       const elapsedTime = now - startDate;
@@ -20,64 +93,50 @@
       const m = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
       const s = Math.floor((timeLeft % (1000 * 60)) / 1000);
 
-      const barElement = document.getElementById('bar');
-      const percentElement = document.getElementById('percent-text');
-      const countdownElement = document.getElementById('countdown');
+      const bar = document.getElementById('bar');
+      const percent = document.getElementById('percent-text');
+      const countdown = document.getElementById('countdown');
 
-      if (barElement) barElement.style.width = progress + '%';
-      if (percentElement) percentElement.innerText = progress.toFixed(6) + "% 경과";
+      if (bar) bar.style.width = progress + '%';
+      if (percent) percent.innerText = progress.toFixed(6) + "% 경과";
       
-      if (countdownElement) {
+      if (countdown) {
         if (timeLeft > 0) {
-          countdownElement.innerHTML = 
-            `D-${d}<span class="unit">일</span>${h}<span class="unit">시</span>${m}<span class="unit">분</span>${s}<span class="unit">초</span>`;
+          countdown.innerHTML = `D-${d}<span class="unit">일</span>${h}<span class="unit">시</span>${m}<span class="unit">분</span>${s}<span class="unit">초</span>`;
         } else {
-          countdownElement.innerHTML = "수능 대박! 당신의 시간을 믿으세요.";
+          countdown.innerHTML = "수능 대박! 당신의 시간을 믿으세요.";
         }
       }
-    } catch (e) {
-      console.error("D-Day 계산 오류:", e);
     }
-  }
 
-  // --- 명언 로직 ---
-  const quotes = [
-    "사람은 쉽게 죽지 않는다. - 장자크 루소",
-    "오늘의 땀방울이 내일의 영광이 된다. - 수험생 모드",
-    "잔잔한 바다에선 유능한 뱃사공이 만들어지지 않는다. - 영국 속담",
-    "지치지 않는 마음이 제일 중요해. - 응원 봇",
-    "실패는 다시 시작할 기회일 뿐이다. - 헨리 포드",
-    "할 수 있다고 믿는 사람이 결국 해낸다. - 정주영",
-    "계획 없는 목표는 단지 희망사항일 뿐이다. - 생텍쥐페리",
-    "가장 어두운 밤도 언젠가는 끝나고 해가 떠오를 것이다. - 빅토르 위고"
-  ];
+    const quotes = [
+      "사람은 쉽게 죽지 않는다. - 장자크 루소",
+      "오늘의 땀방울이 내일의 영광이 된다. - 수험생 모드",
+      "잔잔한 바다에선 유능한 뱃사공이 만들어지지 않는다. - 영국 속담",
+      "지치지 않는 마음이 제일 중요해. - 응원 봇",
+      "실패는 다시 시작할 기회일 뿐이다. - 헨리 포드",
+      "할 수 있다고 믿는 사람이 결국 해낸다. - 정주영",
+      "계획 없는 목표는 단지 희망사항일 뿐이다. - 생텍쥐페리",
+      "가장 어두운 밤도 언젠가는 끝나고 해가 떠오를 것이다. - 빅토르 위고"
+    ];
 
-  function displayRandomQuote() {
-    try {
-      const randomIndex = Math.floor(Math.random() * quotes.length);
-      const rawQuote = quotes[randomIndex];
+    function displayRandomQuote() {
       const box = document.getElementById("quote-box");
-
       if (box) {
+        const rawQuote = quotes[Math.floor(Math.random() * quotes.length)];
         const parts = rawQuote.split("-");
-        const text = parts[0].trim();
-        const author = parts[1] ? parts[1].trim() : "";
-
         box.style.opacity = 0;
         setTimeout(() => {
-          box.innerHTML = `${text} <span class="author">- ${author}</span>`;
+          box.innerHTML = `${parts[0].trim()} <span class="author">- ${parts[1].trim()}</span>`;
           box.style.opacity = 1;
         }, 150);
       }
-    } catch (e) {
-      console.error("명언 표시 오류:", e);
     }
-  }
 
-  // 즉시 실행 및 반복 설정
-  document.addEventListener('DOMContentLoaded', () => {
+    // 초기 실행 및 1초 간격 업데이트
     updateDDay();
     displayRandomQuote();
     setInterval(updateDDay, 1000);
-  });
-</script>
+  </script>
+</body>
+</html>
