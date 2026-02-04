@@ -124,14 +124,14 @@
       "우리는 이 자리에서 죽고! 다음으로 살아갈 자들에게 의미를 맡긴다!! 그것만이 유일하게 이 잔혹한 세계에 저항할 방법이다!!! - 진격의 거인",
       "우리는 길을 잃으려 노력하는 별들인가요? - 비긴 어게인 (Lost Stars)",
       "전략은 실행이다. - 하버드 비즈니스 리뷰",
-      "내 일생 조국과 민족을 위하여... 안되면 되게 하라. - 박정희"
+      "내 일생 조가와 민족을 위하여... 안되면 되게 하라. - 박정희", // 콤마 추가
       "오늘의 땀방울이 내일의 영광이 된다. - 재미나이",
       "잔잔한 바다에선 유능한 뱃사공이 만들어지지 않는다. - 영국 속담",
       "지치지 않는 마음이 제일 중요해. - 재미나이",
       "실패는 다시 시작할 기회일 뿐이다. - 헨리 포드",
       "할 수 있다고 믿는 사람이 결국 해낸다. - 정주영",
       "계획 없는 목표는 단지 희망사항일 뿐이다. - 생텍쥐페리",
-      "가장 어두운 밤도 언젠가는 끝나고 해가 떠오를 것이다. - 빅토르 위고"
+      "가장 어두운 밤도 언젠가는 끝나고 해가 떠오를 것이다. - 빅토르 위고", // 콤마 추가
       "너 자신을 알라. - 소크라테스",
       "유일한 진정한 지혜는 자신이 아무것도 모른다는 것을 아는 것이다. - 소크라테스",
       "반성하지 않는 삶은 살 가치가 없다. - 소크라테스",
@@ -150,10 +150,14 @@
       const box = document.getElementById("quote-box");
       if (box) {
         const rawQuote = quotes[Math.floor(Math.random() * quotes.length)];
-        const parts = rawQuote.split("-");
+        // 마지막 하이픈을 기준으로 문장과 이름을 분리하여 더 안전하게 처리합니다.
+        const lastHyphenIndex = rawQuote.lastIndexOf("-");
+        const quoteText = rawQuote.substring(0, lastHyphenIndex).trim();
+        const authorText = rawQuote.substring(lastHyphenIndex + 1).trim();
+        
         box.style.opacity = 0;
         setTimeout(() => {
-          box.innerHTML = `${parts[0].trim()} <span class="author">- ${parts[1].trim()}</span>`;
+          box.innerHTML = `${quoteText} <span class="author">- ${authorText}</span>`;
           box.style.opacity = 1;
         }, 150);
       }
