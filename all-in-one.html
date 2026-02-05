@@ -2,6 +2,7 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
+  <title>2027 수능 타임라인 & 명언</title>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Song+Myung&display=swap');
 
@@ -11,6 +12,7 @@
       --text-sub: rgba(55, 53, 47, 0.6);
       --bar-bg: #EEEEEE;
       --divider: rgba(55, 53, 47, 0.1);
+      --accent: #eb5757; /* 강조색 */
     }
 
     @media (prefers-color-scheme: dark) {
@@ -30,6 +32,7 @@
       transition: background-color 0.3s ease;
     }
 
+    /* --- D-Day Section --- */
     .dday-section { width: 90%; text-align: center; margin-bottom: 30px; }
     .title { color: var(--text-main); font-size: 16px; margin-bottom: 15px; letter-spacing: 2px; opacity: 0.6; }
     
@@ -38,22 +41,29 @@
       position: relative; margin-bottom: 20px; box-shadow: inset 0 1px 3px rgba(0,0,0,0.2);
     }
     .progress-bar {
-      width: 0%; height: 100%; background: linear-gradient(90deg, #eb5757, #f2994a);
+      width: 0%; height: 100%; background: linear-gradient(90deg, var(--accent), #f2994a);
       border-radius: 20px; box-shadow: 0 0 10px rgba(235, 87, 87, 0.4); transition: width 1s linear;
     }
 
     #countdown { color: var(--text-main); font-size: 28px; margin-bottom: 5px; }
-    .unit { font-size: 14px; color: #eb5757; margin-left: 2px; margin-right: 5px; }
-    .percent-label { color: #eb5757; font-size: 12px; font-family: sans-serif; opacity: 0.8; }
+    .unit { font-size: 14px; color: var(--accent); margin-left: 2px; margin-right: 5px; }
+    .percent-label { color: var(--accent); font-size: 12px; font-family: sans-serif; opacity: 0.8; }
 
     .divider { width: 60%; height: 1px; background: var(--divider); margin: 10px 0 25px 0; }
 
+    /* --- Quote Section --- */
     #quote-container { width: 90%; text-align: center; cursor: pointer; user-select: none; }
-    #quote-box { font-size: 24px; color: var(--text-main); line-height: 1.4; word-break: keep-all; transition: opacity 0.3s; }
-    .author { display: inline-block; font-size: 14px; color: var(--text-sub); margin-left: 10px; vertical-align: middle; }
+    #quote-box { 
+      font-size: 24px; color: var(--text-main); line-height: 1.5; 
+      word-break: keep-all; transition: opacity 0.3s; 
+    }
+    
+    /* [수정됨] 문장을 감싸는 span에만 따옴표 적용 */
+    .quote-text { display: inline; position: relative; }
+    .quote-text::before { content: "“"; color: var(--accent); font-size: 35px; margin-right: 8px; vertical-align: sub; line-height: 0; }
+    .quote-text::after { content: "”"; color: var(--accent); font-size: 35px; margin-left: 8px; vertical-align: sub; line-height: 0; }
 
-    #quote-box::before { content: "“"; color: #eb5757; font-size: 35px; margin-right: 8px; vertical-align: sub; }
-    #quote-box::after { content: "”"; color: #eb5757; font-size: 35px; margin-left: 8px; vertical-align: sub; }
+    .author { display: inline-block; font-size: 16px; color: var(--text-sub); margin-top: 10px; vertical-align: middle; }
   </style>
 </head>
 <body>
@@ -70,13 +80,13 @@
   <div class="divider"></div>
 
   <div id="quote-container" onclick="displayRandomQuote()">
-    <div id="quote-box">불러오는 중...</div>
+    <div id="quote-box">명언을 불러오는 중...</div>
   </div>
 
   <script>
-    // 날짜 설정: 월은 0부터 시작 (11월은 10)
-    const targetDate = new Date(2026, 10, 19, 9, 0, 0).getTime();
-    const startDate = new Date(2026, 0, 1, 0, 0, 0).getTime();
+    // --- D-Day Script ---
+    const targetDate = new Date(2026, 10, 19, 9, 0, 0).getTime(); // 2026년 11월 19일
+    const startDate = new Date(2026, 0, 1, 0, 0, 0).getTime();   // 2026년 1월 1일
 
     function updateDDay() {
       const now = new Date().getTime();
@@ -85,8 +95,7 @@
       const timeLeft = targetDate - now;
 
       let progress = (elapsedTime / totalTime) * 100;
-      if (progress > 100) progress = 100;
-      if (progress < 0) progress = 0;
+      progress = Math.max(0, Math.min(100, progress)); // 0~100 사이 값으로 제한
 
       const d = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
       const h = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
@@ -104,65 +113,68 @@
         if (timeLeft > 0) {
           countdown.innerHTML = `D-${d}<span class="unit">일</span>${h}<span class="unit">시</span>${m}<span class="unit">분</span>${s}<span class="unit">초</span>`;
         } else {
-          countdown.innerHTML = "수능 대박! 당신의 시간을 믿으세요.";
+          countdown.innerHTML = "수능 대박! 당신의 노력을 믿으세요.";
         }
       }
     }
 
-   const quotes = [
-      '"부지런하고 부지런하고 부지런하라. 그것만이 너의 무지를 구제할 것이다." - 정약용',
-      '"나는 무엇을 해야 하는가?" - 칸트',
-      '"내 언어의 한계는 내 세계의 한계를 의미한다." - 비트겐슈타인',
-      '"비록 내일 지구의 종말이 온다 할지라도, 나는 오늘 한 그루의 사과나무를 심겠다." - 스피노자',
-      '"자신을 이기는 것이 가장 큰 승리다." - 플라톤',
-      '"등불을 밝혀 어둠을 조금 내몰고, 시대처럼 올 아침을 기다리는 최후의 나." - 윤동주',
-      '"산 정상을 향한 투쟁 그 자체가 인간의 마음을 가득 채우기에 충분하다." - 카뮈',
-      '"숲속에 두 갈래 길이 있었고, 나는 사람이 적게 간 길을 택하였다." - 로버트 프로스트',
-      '"가장 강한 전사는 이 두 가지, 시간과 인내다." - 톨스토이',
-      '"인간은 파괴될지언정 패배하지 않는다." - 어니스트 허밍웨이',
-      '"아픔을 동반하지 않은 교훈은 의미가 없다. 사람은 무언가를 희생시키지 않으면 아무것도 얻을 수가 없으므로." - 강철의 연금술사',
-      '"우리는 이 자리에서 죽고! 다음으로 살아갈 자들에게 의미를 맡긴다!! 그것만이 유일하게 이 잔혹한 세계에 저항할 방법이다!!!" - 진격의 거인',
-      '"우리는 길을 잃으려 노력하는 별들인가요?" - 비긴 어게인 (Lost Stars)',
-      '"전략은 실행이다." - 하버드 비즈니스 리뷰',
-      '"내 일생 조국와 민족을 위하여... 안되면 되게 하라." - 박정희',
-      '"오늘의 땀방울이 내일의 영광이 된다." - 재미나이',
-      '"잔잔한 바다에선 유능한 뱃사공이 만들어지지 않는다." - 영국 속담',
-      '"지치지 않는 마음이 제일 중요해." - 재미나이',
-      '"실패는 다시 시작할 기회일 뿐이다." - 헨리 포드',
-      '"할 수 있다고 믿는 사람이 결국 해낸다." - 정주영',
-      '"계획 없는 목표는 단지 희망사항일 뿐이다." - 생텍쥐페리',
-      '"가장 어두운 밤도 언젠가는 끝나고 해가 떠오를 것이다." - 빅토르 위고',
-      '"너 자신을 알라." - 소크라테스',
-      '"유일한 진정한 지혜는 자신이 아무것도 모른다는 것을 아는 것이다." - 소크라테스',
-      '"반성하지 않는 삶은 살 가치가 없다." - 소크라테스',
-      '"탁월함은 행위가 아니라 습관이다." - 아리스토텔레스',
-      '"교육의 뿌리는 쓰지만 그 열매는 달다." - 아리스토텔레스',
-      '"네가 바꿀 수 있는 것에 집중하라." - 스토아학파',
-      '"행복은 마음의 혼란이 없는 상태이다." - 에피쿠로스',
-      '"배움은 결코 정신을 지치게 하지 않는다." - 레오나르도 다빈치',
-      '"아는 것만으로는 충분하지 않다. 적용해야 한다." - 레오나르도 다빈치',
-      '"의지가 있는 곳에 길이 있다." - 레오나르도 다빈치',
-      '"철은 사용하지 않으면 녹슬고, 우리의 지성도 이와 같다." - 레오나르도 다빈치',
-      '"단순함은 궁극의 정교함이다." - 레오나르도 다빈치',
+    // --- Quote Script ---
+    // [수정됨] 데이터에서 검은색 따옴표 제거
+    const quotes = [
+      '부지런하고 부지런하고 부지런하라. 그것만이 너의 무지를 구제할 것이다. - 정약용',
+      '나는 무엇을 해야 하는가? - 칸트',
+      '내 언어의 한계는 내 세계의 한계를 의미한다. - 비트겐슈타인',
+      '비록 내일 지구의 종말이 온다 할지라도, 나는 오늘 한 그루의 사과나무를 심겠다. - 스피노자',
+      '자신을 이기는 것이 가장 큰 승리다. - 플라톤',
+      '등불을 밝혀 어둠을 조금 내몰고, 시대처럼 올 아침을 기다리는 최후의 나. - 윤동주',
+      '산 정상을 향한 투쟁 그 자체가 인간의 마음을 가득 채우기에 충분하다. - 카뮈',
+      '숲속에 두 갈래 길이 있었고, 나는 사람이 적게 간 길을 택하였다. - 로버트 프로스트',
+      '가장 강한 전사는 이 두 가지, 시간과 인내다. - 톨스토이',
+      '인간은 파괴될지언정 패배하지 않는다. - 어니스트 허밍웨이',
+      '아픔을 동반하지 않은 교훈은 의미가 없다. 사람은 무언가를 희생시키지 않으면 아무것도 얻을 수가 없으므로. - 강철의 연금술사',
+      '우리는 이 자리에서 죽고! 다음으로 살아갈 자들에게 의미를 맡긴다!! 그것만이 유일하게 이 잔혹한 세계에 저항할 방법이다!!! - 진격의 거인',
+      '우리는 길을 잃으려 노력하는 별들인가요? - 비긴 어게인 (Lost Stars)',
+      '전략은 실행이다. - 하버드 비즈니스 리뷰',
+      '내 일생 조국와 민족을 위하여... 안되면 되게 하라. - 박정희',
+      '오늘의 땀방울이 내일의 영광이 된다. - 재미나이',
+      '잔잔한 바다에선 유능한 뱃사공이 만들어지지 않는다. - 영국 속담',
+      '지치지 않는 마음이 제일 중요해. - 재미나이',
+      '실패는 다시 시작할 기회일 뿐이다. - 헨리 포드',
+      '할 수 있다고 믿는 사람이 결국 해낸다. - 정주영',
+      '계획 없는 목표는 단지 희망사항일 뿐이다. - 생텍쥐페리',
+      '가장 어두운 밤도 언젠가는 끝나고 해가 떠오를 것이다. - 빅토르 위고',
+      '너 자신을 알라. - 소크라테스',
+      '유일한 진정한 지혜는 자신이 아무것도 모른다는 것을 아는 것이다. - 소크라테스',
+      '반성하지 않는 삶은 살 가치가 없다. - 소크라테스',
+      '탁월함은 행위가 아니라 습관이다. - 아리스토텔레스',
+      '교육의 뿌리는 쓰지만 그 열매는 달다. - 아리스토텔레스',
+      '네가 바꿀 수 있는 것에 집중하라. - 스토아학파',
+      '행복은 마음의 혼란이 없는 상태이다. - 에피쿠로스',
+      '배움은 결코 정신을 지치게 하지 않는다. - 레오나르도 다빈치',
+      '아는 것만으로는 충분하지 않다. 적용해야 한다. - 레오나르도 다빈치',
+      '의지가 있는 곳에 길이 있다. - 레오나르도 다빈치',
+      '철은 사용하지 않으면 녹슬고, 우리의 지성도 이와 같다. - 레오나르도 다빈치',
+      '단순함은 궁극의 정교함이다. - 레오나르도 다빈치',
     ];
+
     function displayRandomQuote() {
       const box = document.getElementById("quote-box");
-      if (box) {
-        const rawQuote = quotes[Math.floor(Math.random() * quotes.length)];
-        // 마지막 하이픈을 기준으로 문장과 이름을 분리하여 더 안전하게 처리합니다.
-        const lastHyphenIndex = rawQuote.lastIndexOf("-");
-        const quoteText = rawQuote.substring(0, lastHyphenIndex).trim();
-        const authorText = rawQuote.substring(lastHyphenIndex + 1).trim();
-        
-        box.style.opacity = 0;
-        setTimeout(() => {
-          box.innerHTML = `${quoteText} <span class="author">- ${authorText}</span>`;
-          box.style.opacity = 1;
-        }, 150);
-      }
+      if (!box) return;
+
+      const rawQuote = quotes[Math.floor(Math.random() * quotes.length)];
+      const lastHyphenIndex = rawQuote.lastIndexOf("-");
+      const quoteText = rawQuote.substring(0, lastHyphenIndex).trim();
+      const authorText = rawQuote.substring(lastHyphenIndex + 1).trim();
+      
+      box.style.opacity = 0;
+      setTimeout(() => {
+        // [수정됨] 문장을 감싸는 span(.quote-text) 추가
+        box.innerHTML = `<span class="quote-text">${quoteText}</span> <br> <span class="author">- ${authorText}</span>`;
+        box.style.opacity = 1;
+      }, 200);
     }
 
-    // 초기 실행 및 1초 간격 업데이트
+    // 초기 실행 및 인터벌 설정
     updateDDay();
     displayRandomQuote();
     setInterval(updateDDay, 1000);
