@@ -1,87 +1,93 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8">
-  <style>
-    /* 송명 폰트 불러오기 */
-    @import url('https://fonts.googleapis.com/css2?family=Song+Myung&display=swap');
-
-    body {
-      margin: 0; padding: 0; display: flex; flex-direction: column; justify-content: center; align-items: center;
-      height: 100vh; background-color: #191919; overflow: hidden; font-family: 'Song Myung', serif;
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>디데이 진행바</title>
+<style>
+  :root {
+    --ink: #37352F;
+    --muted: #9B9A97;
+    --track: #EBECED;
+    --bar: #2383E2;
+    --chip: #F1F1EF;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --ink: #EFEFED;
+      --muted: #7F7F7F;
+      --track: #3B3B3B;
+      --bar: #529CCA;
+      --chip: #2F3437;
     }
-
-    .title { color: #FFFFFF; font-size: 18px; margin-bottom: 20px; letter-spacing: 2px; opacity: 0.8; }
-
-    /* 진행바 디자인 */
-    .progress-container {
-      width: 85%; height: 12px; background: #333; border-radius: 20px;
-      position: relative; margin-bottom: 25px; box-shadow: inset 0 2px 4px rgba(0,0,0,0.5);
-    }
-
-    .progress-bar {
-      width: 0%; height: 100%;
-      background: linear-gradient(90deg, #eb5757, #f2994a);
-      border-radius: 20px; box-shadow: 0 0 15px rgba(235, 87, 87, 0.6);
-      transition: width 1s linear;
-    }
-
-    /* 실시간 카운트다운 */
-    #countdown { color: #FFFFFF; font-size: 32px; text-align: center; line-height: 1.5; }
-    .unit { font-size: 16px; color: #eb5757; margin-left: 3px; margin-right: 8px; }
-    
-    /* 소수점 진행률 (살아있는 느낌!) */
-    .percent-label { color: #eb5757; font-size: 14px; margin-top: 10px; font-family: sans-serif; }
-  </style>
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: transparent; }
+  body {
+    color: var(--ink);
+    font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol";
+    padding: 8px 4px;
+    -webkit-font-smoothing: antialiased;
+  }
+  .widget { max-width: 640px; }
+  .head { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 10px; }
+  .title { font-size: 15px; font-weight: 600; }
+  .chip { font-size: 12px; font-weight: 500; background: var(--chip); border-radius: 4px; padding: 2px 8px; font-variant-numeric: tabular-nums; }
+  .track { height: 8px; background: var(--track); border-radius: 999px; overflow: hidden; }
+  .fill { height: 100%; width: 0; background: var(--bar); border-radius: 999px; }
+  .meta { display: flex; justify-content: space-between; align-items: baseline; margin-top: 8px; font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; }
+  .percent { font-size: 13px; color: var(--ink); font-weight: 500; }
+</style>
 </head>
 <body>
-
-  <div class="title">2027학년도 수능 타임라인</div>
-  
-  <div class="progress-container">
-    <div class="progress-bar" id="bar"></div>
+<div class="widget">
+  <div class="head">
+    <div class="title" id="title"></div>
+    <div class="chip" id="dday"></div>
   </div>
+  <div class="track" role="progressbar" aria-valuemin="0" aria-valuemax="100" id="track">
+    <div class="fill" id="fill"></div>
+  </div>
+  <div class="meta">
+    <span class="percent" id="percent"></span>
+    <span id="remain"></span>
+  </div>
+</div>
 
-  <div id="countdown">남은 시간 계산 중...</div>
-  <div class="percent-label" id="percent-text">0.000000%</div>
+<script>
+  // ▼ 여기만 수정하세요 ▼
+  const TITLE = "🏗️ 건축공학 학점은행제 수료";
+  const START = "2026-03-02T00:00:00";   // 시작 (YYYY-MM-DDTHH:mm:ss)
+  const END   = "2028-02-18T00:00:00";   // 목표 수료일
+  // ▲ 여기만 수정하세요 ▲
 
-  <script>
-    // 목표 날짜: 2026년 11월 19일 오전 9시 (수능 당일)
-    const targetDate = new Date("2026-11-19T09:00:00").getTime();
-    // 시작 날짜: 2026년 1월 1일 (올해의 시작점)
-    const startDate = new Date("2026-01-01T00:00:00").getTime();
+  const start = new Date(START).getTime();
+  const end = new Date(END).getTime();
+  const SEC = 1000, MIN = 60 * SEC, HOUR = 60 * MIN, DAY = 24 * HOUR;
+  const pad = n => String(n).padStart(2, "0");
 
-    function updateWidget() {
-      const now = new Date().getTime();
-      const totalTime = targetDate - startDate;
-      const elapsedTime = now - startDate;
-      const timeLeft = targetDate - now;
+  const el = id => document.getElementById(id);
+  el("title").textContent = TITLE;
 
-      // 진행률 계산 (소수점 6자리까지 보여줘서 숫자가 계속 올라가는 걸 보여줌)
-      let progress = (elapsedTime / totalTime) * 100;
-      if (progress > 100) progress = 100;
-      
-      // 남은 시간 계산
-      const d = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
-      const h = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-      const m = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
-      const s = Math.floor((timeLeft % (1000 * 60)) / 1000);
+  function tick() {
+    const now = Date.now();
+    const total = end - start;
+    const ratio = total > 0 ? Math.min(Math.max((now - start) / total, 0), 1) : 0;
+    const pct = ratio * 100;
+    const left = Math.max(end - now, 0);
 
-      // 화면 업데이트
-      document.getElementById('bar').style.width = progress + '%';
-      document.getElementById('percent-text').innerText = progress.toFixed(6) + "% 완료";
-      
-      if (timeLeft > 0) {
-        document.getElementById('countdown').innerHTML = 
-          `D-${d}<span class="unit">일</span>${h}<span class="unit">시</span>${m}<span class="unit">분</span>${s}<span class="unit">초</span>`;
-      } else {
-        document.getElementById('countdown').innerHTML = "수능 대박! 당신의 시간을 믿으세요.";
-      }
-    }
+    el("fill").style.width = pct + "%";
+    el("percent").textContent = pct.toFixed(6) + "%";
+    el("track").setAttribute("aria-valuenow", pct.toFixed(2));
 
-    // 1초마다 시계처럼 돌아가게 설정
-    setInterval(updateWidget, 1000);
-    updateWidget();
-  </script>
+    const days = Math.floor(left / DAY);
+    el("dday").textContent = left === 0 ? "D-DAY" : "D-" + Math.ceil(left / DAY);
+    el("remain").textContent =
+      days + "일 " + pad(Math.floor(left % DAY / HOUR)) + ":" + pad(Math.floor(left % HOUR / MIN)) + ":" + pad(Math.floor(left % MIN / SEC)) + " 남음";
+  }
+
+  tick();
+  setInterval(tick, 100);
+</script>
 </body>
 </html>
